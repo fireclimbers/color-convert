@@ -2,12 +2,12 @@
   <div class="big-grid">
     <div class="small-grid">
       <div class="small-title">HSL</div>
-      <div style="grid-area:main;text-align:right;margin-right:12px">
+      <div class="label-side">
         Hue:<br/>
         Saturation:<br/>
         Lightness:
       </div> 
-      <div style="grid-area:right">
+      <div class="input-side">
         <input v-model="hue" v-on:input="updateValue('hsl',$event.target.value)">°<br/>
         <input v-model="sat" v-on:input="updateValue('hsl',$event.target.value)">%<br/>
         <input v-model="lig" v-on:input="updateValue('hsl',$event.target.value)">%
@@ -15,23 +15,23 @@
     </div>
     <div class="small-grid">
       <div class="small-title">RGB</div>
-      <div style="grid-area:main;text-align:right;margin-right:12px">
+      <div class="label-side">
         Red:<br/>
         Green:<br/>
         Blue:<br/> 
       </div>
-      <div style="grid-area:right">
+      <div class="input-side">
         <input v-model="red" v-on:input="updateValue('rgb',$event.target.value)"><br/>
         <input v-model="green" v-on:input="updateValue('rgb',$event.target.value)"><br/>
         <input v-model="blue" v-on:input="updateValue('rgb',$event.target.value)">
       </div>
     </div>
     <div>
-      <div style="text-align:center">Hex</div>
+      <div class="small-title">Hex</div>
       #<input v-model="hex" v-on:input="updateValue('hex',$event.target.value)">
     </div>
     <div>
-      <div v-bind:style="{ backgroundColor: '#'+hex, width: '48px', height: '48px'}"></div>
+      <div class="output-color" v-bind:style="{ backgroundColor: '#'+hex }"></div>
     </div>
   </div>
 </template>
@@ -52,6 +52,7 @@ export default {
   },
   methods: {
     updateValue: function (type, val) {
+      // fires whenever any input is changed
       if (type == 'hsl') {
         this.validateHsl();
       } else if (type == 'rgb') {
@@ -259,7 +260,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .big-grid {
   display:grid;
@@ -273,5 +273,16 @@ export default {
   text-align:center;
   grid-area:header;
 }
-
+.label-side {
+  grid-area:main;
+  text-align:right;
+  margin-right:12px;
+}
+.input-side {
+  grid-area:right;
+}
+.output-color {
+  width:48px;
+  height:48px;
+}
 </style>
