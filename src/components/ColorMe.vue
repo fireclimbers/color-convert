@@ -8,9 +8,9 @@
         Lightness:
       </div> 
       <div class="input-side">
-        <input v-model="hue" v-on:input="updateValue('hsl',$event.target.value)">°<br/>
-        <input v-model="sat" v-on:input="updateValue('hsl',$event.target.value)">%<br/>
-        <input v-model="lig" v-on:input="updateValue('hsl',$event.target.value)">%
+        <input v-model="hue" class="input-box" v-bind:class="{ wrong: hue === '' ? false : !validateNum(hue, 359) }" v-on:input="updateValue('hsl',$event.target.value)">°<br/>
+        <input v-model="sat" class="input-box" v-bind:class="{ wrong: sat === '' ? false : !validateNum(sat, 100) }" v-on:input="updateValue('hsl',$event.target.value)">%<br/>
+        <input v-model="lig" class="input-box" v-bind:class="{ wrong: lig === '' ? false : !validateNum(lig, 100) }" v-on:input="updateValue('hsl',$event.target.value)">%
       </div>
     </div>
     <div class="small-grid">
@@ -21,14 +21,14 @@
         Blue:<br/> 
       </div>
       <div class="input-side">
-        <input v-model="red" v-on:input="updateValue('rgb',$event.target.value)"><br/>
-        <input v-model="green" v-on:input="updateValue('rgb',$event.target.value)"><br/>
-        <input v-model="blue" v-on:input="updateValue('rgb',$event.target.value)">
+        <input v-model="red" class="input-box" v-bind:class="{ wrong: red === '' ? false : !validateNum(red, 255) }" v-on:input="updateValue('rgb',$event.target.value)"><br/>
+        <input v-model="green" class="input-box" v-bind:class="{ wrong: green === '' ? false : !validateNum(green, 255) }" v-on:input="updateValue('rgb',$event.target.value)"><br/>
+        <input v-model="blue" class="input-box" v-bind:class="{ wrong: blue === '' ? false : !validateNum(blue, 255) }" v-on:input="updateValue('rgb',$event.target.value)">
       </div>
     </div>
     <div>
       <div class="small-title">Hex</div>
-      #<input v-model="hex" v-on:input="updateValue('hex',$event.target.value)">
+      #<input v-model="hex" class="input-box" v-bind:class="{ wrong: hex === '' ? false : !validateHex() }" v-on:input="updateValue('hex',$event.target.value)">
     </div>
     <div>
       <div class="output-color" v-bind:style="{ backgroundColor: '#'+hex }"></div>
@@ -54,20 +54,35 @@ export default {
     updateValue: function (type, val) {
       // fires whenever any input is changed
       if (type == 'hsl') {
-        this.validateHsl();
+        if (!this.validateNum(this.hue, 359)) return;
+        if (!this.validateNum(this.sat, 100)) return;
+        if (!this.validateNum(this.lig, 100)) return;
+        this.hslToRgb();
       } else if (type == 'rgb') {
-        this.validateRgb();
+        if (!this.validateNum(this.red, 255)) return;
+        if (!this.validateNum(this.green, 255)) return;
+        if (!this.validateNum(this.blue, 255)) return;
+        this.rgbToHsl('rgb');
       } else {
-        this.validateHex();
+        if (!this.validateHex()) return;
+        this.rgbToHsl('hex');
       }
     },
-    validateHsl: function () {
+    validateNum: function (n, range) {
+      if (!isNaN(n)) {
+        var nInt = parseInt(n);
+        if (nInt >= 0 && nInt <= range) {
+          return true;
+        }
+      }
+      return false;
+    },
+    /*validateHsl: function () {
       if (!isNaN(this.hue) && !isNaN(this.sat) && !isNaN(this.lig)) {
         var hueInt = parseInt(this.hue);
         var satInt = parseInt(this.sat);
         var ligInt = parseInt(this.lig);
         if (hueInt >= 0 && hueInt < 360 && satInt >= 0 && satInt <= 100 && ligInt >= 0 && ligInt <= 100) {
-          this.converting = true;
           this.hslToRgb();
         }
       }
@@ -78,17 +93,16 @@ export default {
         var greenInt = parseInt(this.green);
         var blueInt = parseInt(this.blue);
         if (redInt >= 0 && redInt <= 255 && greenInt >= 0 && greenInt <= 255 && blueInt >= 0 && blueInt <= 255) {
-          this.converting = true;
           this.rgbToHsl('rgb');
         }
       }
-    },
+    },*/
     validateHex: function () {
       var isHex = /(^[0-9A-F]{6}$)|(^[0-9A-F]{3}$)/i.test(this.hex);
       if (isHex) {
-        this.converting = true;
-        this.rgbToHsl('hex');
+        return true;
       }
+      return false;
     },
     hslToRgb: function () {
       // convert hsl to rgb
@@ -129,7 +143,6 @@ export default {
       this.blue = Math.round(this.rgbTest(tB, t1, t2)*255);
 
       this.rgbToHex();
-      this.converting = false;
     },
     rgbTest: function (tColor, t1, t2) {
       var test1 = 6 * tColor;
@@ -206,7 +219,6 @@ export default {
       }
 
       this.hue = Math.round(h);
-      this.converting = false;
     },
     rgbToHex: function (r, g, b) {
       if (r) {
@@ -284,5 +296,15 @@ export default {
 .output-color {
   width:48px;
   height:48px;
+}
+.input-box {
+  border-color: #ccc;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 3px;
+  padding: 3px;
+}
+.wrong {
+  background-color: #f00;
 }
 </style>
