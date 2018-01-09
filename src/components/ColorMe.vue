@@ -77,26 +77,6 @@ export default {
       }
       return false;
     },
-    /*validateHsl: function () {
-      if (!isNaN(this.hue) && !isNaN(this.sat) && !isNaN(this.lig)) {
-        var hueInt = parseInt(this.hue);
-        var satInt = parseInt(this.sat);
-        var ligInt = parseInt(this.lig);
-        if (hueInt >= 0 && hueInt < 360 && satInt >= 0 && satInt <= 100 && ligInt >= 0 && ligInt <= 100) {
-          this.hslToRgb();
-        }
-      }
-    },
-    validateRgb: function () {
-      if (!isNaN(this.red) && !isNaN(this.green) && !isNaN(this.blue)) {
-        var redInt = parseInt(this.red);
-        var greenInt = parseInt(this.green);
-        var blueInt = parseInt(this.blue);
-        if (redInt >= 0 && redInt <= 255 && greenInt >= 0 && greenInt <= 255 && blueInt >= 0 && blueInt <= 255) {
-          this.rgbToHsl('rgb');
-        }
-      }
-    },*/
     validateHex: function () {
       var isHex = /(^[0-9A-F]{6}$)|(^[0-9A-F]{3}$)/i.test(this.hex);
       if (isHex) {
